@@ -1,16 +1,12 @@
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.channel.TextChannel;
 import discord4j.core.spec.MessageCreateSpec;
-import discord4j.store.api.delegating.DelegatingStoreService;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 public class WerewolfGame {
     TextChannel mainChannel;
@@ -106,7 +102,7 @@ public class WerewolfGame {
                             .getMemberMentions()
                             .get(0)
                             .asFullMember();
-                      if (targetPlayer.hasElement() == true){ //yeah i know that doesnt work :,D
+                      if (/*targetPlayer.hasElement(). == true*/true){ //yeah i know that doesnt work :,D
 
                         alivePlayers().stream()
                                 .filter(y -> y.getClass()
@@ -152,7 +148,7 @@ public class WerewolfGame {
 
                 }
                 else {
-                    werewolfChannel.createMessage().withContent("You have already voted ;D")
+                    werewolfChannel.createMessage().withContent("You have already voted ;D");
                 }
 
 

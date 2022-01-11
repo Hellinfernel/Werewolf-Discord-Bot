@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Main {
-    private static final String token = "OTI1MDI5ODExNTM2MTY2OTMy.YcnLJQ.ba4bbqqEKrdm2YKQDRt77FRhkJc";
     static Map<String, Command> commands = new HashMap<>();
     private static GatewayDiscordClient client;
 
@@ -28,7 +27,9 @@ public class Main {
 
     static {
 
-        client = DiscordClientBuilder.create(token)
+
+
+        client = DiscordClientBuilder.create(System.getenv("DISCORD_BOT_API_TOKEN"))
                 .build()
                 .login()
                 .block();
