@@ -18,7 +18,7 @@ public class WerewolfGame {
     ArrayList<WerewolfGameRole> playerList;
    // ArrayList<WerewolfEvent> DayEvent;
     // ArrayList<WerewolfEvent> NightEvent;
-    boolean isDay;
+    boolean isDay = false;
     private boolean gameEnd = false;
 
     WerewolfGame(ArrayList<Member> memberList, TextChannel mainChannel, TextChannel werewolfChannel){
@@ -82,7 +82,7 @@ public class WerewolfGame {
                         .isAssignableFrom(Werewolf.class))
                 .forEach(y -> votingWerewolfes.put(y.player,false));
 
-        HashMap<Member, Integer> votedVictims = new HashMap<>();
+        HashMap<WerewolfGameRole, Integer> votedVictims = new HashMap<>();
 
 
 
@@ -113,20 +113,34 @@ public class WerewolfGame {
                                     votingWerewolfes.replace(votingPlayer,false,true);
                                     if (votedVictims.containsKey(victim.player)){
                                         int voteCounter = votedVictims.get(victim) + 1;
-                                        votedVictims.replace(victim.player, voteCounter);
+                                        votedVictims.replace(victim, voteCounter);
                                         werewolfChannel.createMessage().withContent(victim.player.getTag()+ " got a vote. He/She/It has now "+ voteCounter + " votes.");
 
                                     }
                                     else{
-                                        votedVictims.put(victim.player,1);
+                                        votedVictims.put(victim,1);
                                         werewolfChannel.createMessage().withContent(victim.player.getTag() + " got a vote. He/She/It has now 1 vote.");
                                     }
 
                                     long remainingWerewolfVotes = votingWerewolfes.entrySet().stream().filter(x -> x.getValue() == false).count();
                                     long highestVoting = votedVictims.values().stream().mapToInt(x -> x).filter(x -> x >= 0).max().orElse(0); //finds the highest value.
                                     long secondHighestVoting = votedVictims.values().stream().mapToInt(x -> x).filter(x -> x < highestVoting).filter(x -> x >= 0).max().orElse(0); //finds the second highest value.
-                                    if (highestVoting - secondHighestVoting > remainingWerewolfVotes){
-                                        
+                                    if (highestVoting - secondHighestVoting > remainingWerewolfVotes && votedVictims.values().stream().filter(x -> x == highestVoting).count() == 1){ //used to find out if the remaining votes would be able to change the result. if not, there will be the kill.
+                                        WerewolfGameRole finalVictim = votedVictims.entrySet().stream().filter(x -> x.getValue() == highestVoting).findFirst().get().getKey();
+                                        finalVictim.isAlive = false;
+                                        werewolfChannel.createMessage().withContent(finalVictim.player.getTag() + " is the Victim :D");
+                                        Main.commands.remove("kill");
+                                    }
+                                    else if (remainingWerewolfVotes == 0){ //finds out if there are no remaining votes. this should be only reached if there is more then one with the most votes.
+                                        WerewolfGameRole finalVictim = votedVictims.entrySet().stream().filter(x -> x.getValue() == highestVoting).findAny().get().getKey();
+                                        finalVictim.isAlive = false;
+                                        werewolfChannel.createMessage().withContent("Well, seems like there is a draw. We took a random of the mostvoted guys and kill him... " + finalVictim.player.getTag() + " is our Victim.");
+                                        Main.commands.remove("kill");
+                                    }
+                                    else { //forgot what here should happen :,D
+                                        werewolfChannel.createMessage().withContent("forgot what here should happen lol");
+
+
                                     }
 
 
@@ -175,7 +189,7 @@ public class WerewolfGame {
     void gameRun() {
 
 
-        while (gameEnd =false) {
+        while (gameEnd = false) {
 
 
             if (someoneWhoWon() == null) {
