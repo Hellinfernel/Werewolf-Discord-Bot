@@ -189,7 +189,7 @@ public class WerewolfGame {
     void gameRun() {
 
 
-        while (gameEnd = false) {
+        while (gameEnd == false) {
 
 
             if (someoneWhoWon() == null) {
