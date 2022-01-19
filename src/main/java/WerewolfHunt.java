@@ -1,8 +1,6 @@
-import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.object.entity.Member;
-import reactor.core.publisher.Mono;
 
-public class WerewolfHunt extends WerewolfGameEvent{
+
+public class WerewolfHunt {
 
 /*
     @Override
@@ -88,6 +86,6 @@ public class WerewolfHunt extends WerewolfGameEvent{
         }
 
     }
-    
+
                 */
 }
