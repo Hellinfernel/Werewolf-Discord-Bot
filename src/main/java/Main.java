@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 public class Main {
     static Map<String, Command> commands = new HashMap<>();
     private static GatewayDiscordClient client;
+    public static WerewolfGame werewolfGame;
+    public static WerewolfGame.WerewolfGamePreGenerate preGenerate;
 
 
 
@@ -40,6 +42,10 @@ public class Main {
         commands.put("ping", event -> event.getMessage().getChannel()
                 .flatMap(channel -> channel.createMessage("Pong!"))
                 .then());
+
+        commands.put("newGame", event ->  {
+            preGenerate = new WerewolfGame.WerewolfGamePreGenerate();
+            return Mono.empty();});
 
         Snowflake targetChannelSnowflake = Snowflake.of(927551554188349501L);
 
@@ -81,6 +87,7 @@ public class Main {
 
 
         });
+        
 
 
     }

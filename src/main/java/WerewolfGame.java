@@ -24,6 +24,62 @@ public class WerewolfGame {
     boolean isDay = false;
     private boolean gameEnd = false;
 
+    public static class WerewolfGamePreGenerate{
+        TextChannel mainChannel;
+        TextChannel werewolfChannel;
+        ArrayList<Member> memberList = new ArrayList<>();
+
+        public WerewolfGamePreGenerate(){
+            Main.commands.put("setThisAsMainChannel", event -> event.getMessage().getChannel().ofType(TextChannel.class).doOnNext(this::setMainChannel).then());
+            Main.commands.put("setThisAsWerewolfChannel", event -> event.getMessage().getChannel().ofType(TextChannel.class).doOnNext(this::setWerewolfChannel).then());
+            Main.commands.put("addMe", event -> event.getMessage().getAuthorAsMember().doOnNext(this::addToPlayerList).then());
+            Main.commands.put("deAddMe", event -> event.getMessage().getAuthorAsMember().doOnNext(this::deAddFromPlayerList).then());
+            Main.commands.put("init", event -> {Main.werewolfGame =initialyseWerewolfGame(); return Mono.empty();
+            });
+        }
+
+        public void setMainChannel(TextChannel mainChannel) {
+            this.mainChannel = mainChannel;
+        }
+
+        public void setWerewolfChannel(TextChannel werewolfChannel) {
+            this.werewolfChannel = werewolfChannel;
+
+        }
+
+        public void addToPlayerList(Member member) {
+            memberList.add(member);
+
+        }
+        public Mono<Void> deAddFromPlayerList(Member member){
+            memberList.remove(member);
+            return Mono.empty();
+        }
+
+        public WerewolfGame initialyseWerewolfGame() {
+            Exception exception = new Exception();
+            if(mainChannel == null){
+               // throw exception;
+            }
+            if (werewolfChannel == null){
+              //  throw exception;
+            }
+            if (memberList.size() <= 3){
+                // throw exception;
+            }
+            else {
+                Main.commands.remove("setThisAsMainChannel");
+                Main.commands.remove("setThisAsWerewolfChannel");
+                Main.commands.remove("addMe");
+                Main.commands.remove("deAddMe");
+                Main.commands.remove("init");
+                return new WerewolfGame(memberList, mainChannel, werewolfChannel);
+            }
+            return null;
+        }
+
+    }
+
     WerewolfGame(ArrayList<Member> memberList, TextChannel mainChannel, TextChannel werewolfChannel){
         playerNumber = memberList.size();
         playerList = giveRoles(memberList);
