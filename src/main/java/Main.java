@@ -1,4 +1,3 @@
-import discord4j.common.util.Snowflake;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
@@ -8,7 +7,6 @@ import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.TextChannel;
 import discord4j.core.spec.TextChannelEditSpec;
-import discord4j.rest.util.Permission;
 import discord4j.rest.util.PermissionSet;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -16,14 +14,12 @@ import reactor.core.publisher.Mono;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Main {
     static Map<String, Command> commands = new HashMap<>();
     private static GatewayDiscordClient client;
-    public static WerewolfGame werewolfGame;
-    public static WerewolfGame.WerewolfGamePreGenerate preGenerate;
+    private static WerewolfGame werewolfGame;
+    private static WerewolfGamePreGenerate preGenerate;
 
 
 
@@ -43,13 +39,30 @@ public class Main {
                 .flatMap(channel -> channel.createMessage("Pong!"))
                 .then());
 
-        commands.put("newGame", event ->  {
-            preGenerate = new WerewolfGame.WerewolfGamePreGenerate();
-            return Mono.empty();});
+        commands.put("newGame", event ->
+            Mono.just(new WerewolfGamePreGenerate())
+                    .doOnNext(werewolfGamePreGenerate -> preGenerate = werewolfGamePreGenerate)
+                    .then());
 
-        Snowflake targetChannelSnowflake = Snowflake.of(927551554188349501L);
+        commands.put("allCommands", event -> event
+                .getMessage()
+                .getChannel()
+                .flatMap(messageChannel -> { StringBuilder stringBuilder = new StringBuilder();
+                commands.keySet().forEach(s -> stringBuilder.append(s + "\n"));
+                return messageChannel.createMessage(stringBuilder.toString());})
+                .then()
+             /*   .doOnNext(channel -> commands
+                        .entrySet()
+                        .stream()
+                        .forEach(stringCommandEntry -> channel
+                                .createMessage(stringCommandEntry
+                                        .getKey())
+                                .subscribe())) */
+                );
 
-        commands.put("setPermission", event ->
+
+
+      /*  commands.put("setPermission", event ->
         {
 
             Mono<Void> ret = client
@@ -86,10 +99,26 @@ public class Main {
             return ret;
 
 
-        });
+        }); */
         
 
 
+    }
+
+    public static void setPreGenerate(WerewolfGamePreGenerate preGenerate) {
+        Main.preGenerate = preGenerate;
+    }
+
+    public static WerewolfGamePreGenerate getPreGenerate() {
+        return preGenerate;
+    }
+
+    public static WerewolfGame getWerewolfGame() {
+        return werewolfGame;
+    }
+
+    public static void setWerewolfGame(WerewolfGame werewolfGame) {
+        Main.werewolfGame = werewolfGame;
     }
 
     Mono<TextChannel> editPermissionsOfTextChannel(TextChannel channel, PermissionSet permissionSetsAllowed, PermissionSet permissionSetsDenied, Member member){
