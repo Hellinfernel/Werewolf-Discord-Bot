@@ -1,9 +1,9 @@
-import discord4j.core.object.entity.Member;
+
 
 public class Werewolf extends WerewolfGameRole {
 
-    public Werewolf(Member player){
-        this.player = player;
+    public Werewolf(){
+
     }
 
     @Override

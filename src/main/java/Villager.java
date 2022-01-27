@@ -2,7 +2,7 @@ import discord4j.core.object.entity.Member;
 
 public class Villager extends WerewolfGameRole{
 
-    public Villager(Member player){
+    public Villager(){
         this.player = player;
     }
 

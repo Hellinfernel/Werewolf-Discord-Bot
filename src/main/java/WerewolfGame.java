@@ -10,8 +10,8 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class WerewolfGame {
-    TextChannel mainChannel;
-    TextChannel werewolfChannel;
+
+
     int playerNumber;
     ArrayList<WerewolfGameRole> playersWhoGotKilledOverNight = new ArrayList<>();
 
@@ -24,11 +24,9 @@ public class WerewolfGame {
     boolean isDay = false;
     private boolean gameEnd = false;
 
-    WerewolfGame(ArrayList<Member> memberList, TextChannel mainChannel, TextChannel werewolfChannel){
+    WerewolfGame(){
         playerNumber = memberList.size();
         playerList = giveRoles(memberList);
-        this.mainChannel = mainChannel;
-        this.werewolfChannel = werewolfChannel;
 
       /*  else {
 

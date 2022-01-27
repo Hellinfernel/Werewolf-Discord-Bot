@@ -1,8 +1,10 @@
-import discord4j.core.object.entity.Member;
+
 
 public abstract class WerewolfGameRole {
 
-    public Member player;
+
+
+    public String name;
     boolean isAlive = true;
     public abstract boolean winningCondition(WerewolfGame game);
 

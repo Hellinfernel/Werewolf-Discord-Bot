@@ -5,6 +5,7 @@ import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.PermissionOverwrite;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.User;
+import discord4j.core.object.entity.channel.MessageChannel;
 import discord4j.core.object.entity.channel.TextChannel;
 import discord4j.core.spec.TextChannelEditSpec;
 import discord4j.rest.util.PermissionSet;
@@ -43,6 +44,14 @@ public class Main {
             Mono.just(new WerewolfGamePreGenerate())
                     .doOnNext(werewolfGamePreGenerate -> preGenerate = werewolfGamePreGenerate)
                     .then());
+
+        commands.put("returnMyName", event -> {
+           Member member =event.getMember().get();
+           Mono<MessageChannel> channel = event.getMessage().getChannel();
+           return channel.flatMap(x -> x.createMessage(member.getTag())).then();
+
+                }
+                );
 
         commands.put("allCommands", event -> event
                 .getMessage()
